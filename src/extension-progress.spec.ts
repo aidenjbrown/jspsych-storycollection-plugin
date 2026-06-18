@@ -7,14 +7,17 @@ jest.useFakeTimers();
 
 // extension-progress is host-plugin-agnostic, so any plugin works as the test
 // vehicle; plugin-storycollection's own trial() never resolves on its own with
-// an empty `pages` array, which is fine since these tests only check rendering
-const baseTrial = {
+// an empty `pages` array, which is fine since these tests only check rendering.
+// plugin-storycollection overrides total_pages to match pages.length (so it can't
+// drift from the trial's real page count), so each trial's pages array here must
+// match whatever total_pages that test wants the extension to render.
+const makeBaseTrial = (numPages = 1) => ({
   type: jsPsychStorycollection,
-  pages: [{}],
+  pages: Array.from({ length: numPages }, () => ({})),
   previous_button: {},
   replay_button: {},
   next_button: {},
-};
+});
 
 // these test trials have no audio and an image with no duration, so the plugin's
 // own "end after the last image's duration" timer fires on the next tick
@@ -28,7 +31,7 @@ describe("extension-progress", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(5),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -49,7 +52,7 @@ describe("extension-progress", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(3),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -72,7 +75,7 @@ describe("extension-progress", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(3),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -92,7 +95,7 @@ describe("extension-progress", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(),
           extensions: [{ type: jsPsychExtensionProgress, params: {} }],
         },
       ],
@@ -109,7 +112,7 @@ describe("extension-progress appearance customization", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(2),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -137,7 +140,7 @@ describe("extension-progress appearance customization", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(1),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -158,7 +161,7 @@ describe("extension-progress appearance customization", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(1),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -185,7 +188,7 @@ describe("extension-progress across multiple trials", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(2),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -194,7 +197,7 @@ describe("extension-progress across multiple trials", () => {
           ],
         },
         {
-          ...baseTrial,
+          ...makeBaseTrial(),
           extensions: [{ type: jsPsychExtensionProgress, params: { show_progress_bar: false } }],
         },
       ],
@@ -212,11 +215,11 @@ describe("extension-progress across multiple trials", () => {
 
   it("does not stack a second progress bar on top of the first", async () => {
     const makeTrial = (pages_completed: number) => ({
-      ...baseTrial,
+      ...makeBaseTrial(1),
       extensions: [
         {
           type: jsPsychExtensionProgress,
-          params: { show_progress_bar: true, total_pages: 3, pages_completed },
+          params: { show_progress_bar: true, total_pages: 1, pages_completed },
         },
       ],
     });
@@ -246,7 +249,7 @@ describe("extension-progress with prefers-reduced-motion", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(2),
           extensions: [
             {
               type: jsPsychExtensionProgress,
@@ -271,7 +274,7 @@ describe("extension-progress with prefers-reduced-motion", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...baseTrial,
+          ...makeBaseTrial(3),
           extensions: [
             {
               type: jsPsychExtensionProgress,
