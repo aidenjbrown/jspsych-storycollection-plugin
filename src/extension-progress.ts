@@ -130,9 +130,15 @@ class StorybookProgressExtension implements JsPsychExtension {
   }
 
   on_finish(): Record<string, any> {
-    const container = this.jsPsych.getDisplayContainerElement();
-    container.querySelector('#storybook-progress-bar')?.remove();
-    container.querySelector('#storybook-celebration-banner')?.remove();
+    // on_start already clears any leftover bar/banner before rendering its own, so
+    // a delay here doesn't risk stacking with whatever trial comes next — it just
+    // gives a final celebration (no next trial to clear it away) time to be seen
+    // instead of vanishing the instant the trial ends.
+    setTimeout(() => {
+      const container = this.jsPsych.getDisplayContainerElement();
+      container.querySelector('#storybook-progress-bar')?.remove();
+      container.querySelector('#storybook-celebration-banner')?.remove();
+    }, 4000);
     return {};
   }
 

@@ -188,11 +188,11 @@ describe("extension-progress across multiple trials", () => {
     const { jsPsych } = await startTimeline(
       [
         {
-          ...makeBaseTrial(2),
+          ...makeBaseTrial(1),
           extensions: [
             {
               type: jsPsychExtensionProgress,
-              params: { show_progress_bar: true, total_pages: 2, pages_completed: 2 },
+              params: { show_progress_bar: true, total_pages: 1, pages_completed: 1 },
             },
           ],
         },

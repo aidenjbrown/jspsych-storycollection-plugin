@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>jsPsychStorycollection Example</title>
     <script src="https://unpkg.com/jspsych"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <!-- Once this plugin package is published, you can load it from a CDN instead:
 <script src="https://unpkg.com/plugin-storycollection"></script> -->
     <script src="../dist/index.browser.min.js"></script>
@@ -18,7 +20,9 @@
     const jsPsych = initJsPsych({
       extensions: [{ type: jsPsychExtensionProgress }, { type: jsPsychExtensionAnimations }],
       on_finish: function() {
-        jsPsych.data.displayData();
+        // give the celebration banner/confetti a few seconds on screen
+        // before replacing the page with the raw data dump
+        setTimeout(() => jsPsych.data.displayData(), 4000);
       }
     });
     
